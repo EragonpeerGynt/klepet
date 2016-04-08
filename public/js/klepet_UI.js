@@ -61,7 +61,7 @@ function vnosVidea(vhod) {
         if(temp[i].match(/(www.youtube.com)/gi)) {
           var temp2 = [];
           temp2 = temp[i].split('=');
-          vhod +=  '<br><iframe src="https://www.youtube.com/embed/'+temp2[1]+'" allowfullscreen></iframe>'
+          $('#sporocila').append('<br><iframe src="https://www.youtube.com/embed/'+temp2[1]+'" allowfullscreen width=200px height=150px style="margin-left:20px"></iframe>');
         }
       }
     }
