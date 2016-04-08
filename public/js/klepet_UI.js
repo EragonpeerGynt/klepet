@@ -24,9 +24,9 @@ function procesirajVnosUporabnika(klepetApp, socket) {
     }
   } else {
     sporocilo = filtirirajVulgarneBesede(sporocilo);
-    sporocilo = dodajanjeHtmlSlik(sporocilo);
     klepetApp.posljiSporocilo(trenutniKanal, sporocilo);
     $('#sporocila').append(divElementEnostavniTekst(sporocilo));
+    sporocilo = dodajanjeHtmlSlik(sporocilo);
     $('#sporocila').scrollTop($('#sporocila').prop('scrollHeight'));
   }
 
