@@ -56,15 +56,12 @@ function filtirirajVulgarneBesede(vhod) {
 function dodajanjeHtmlSlik(vhod) {
     if(vhod.match(/(http:|https:)+\S+(jpg|png|gif)/gi)) {
       var temp = [];
-      temp = vhod.split('\S');
+      temp = vhod.split(' ');
       for(var i = 0; i < temp.length; i++) {
         if(temp[i].match(/(http:|https:)+\S+(jpg|png|gif)/gi)) {
           vhod +=  "<br><img src='"+temp[i]+"' width='200'>"
         }
       }
-      /*vhod +=  "<br><img src='"+temp[0]+"' width='200'>"
-      vhod +=  "<br><img src='"+temp[1]+"' width='200'>"
-      vhod +=  "<br><img src='"+temp[2]+"' width='200'>"*/
     }
     return vhod;
 }
