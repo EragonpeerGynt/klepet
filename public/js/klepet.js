@@ -32,12 +32,6 @@ Klepet.prototype.procesirajUkaz = function(ukaz) {
       var vzdevek = besede.join(' ');
       this.socket.emit('vzdevekSpremembaZahteva', vzdevek);
       break;
-    case 'dregljaj':
-      //https://jackrugile.com/jrumble/
-      besede.shift();
-      var besedilo = besede;
-      
-      break;
     case 'zasebno':
       besede.shift();
       var besedilo = besede.join(' ');
