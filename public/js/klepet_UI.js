@@ -59,7 +59,7 @@ function dodajanjeHtmlSlik(vhod) {
       temp = vhod.split(' ');
       for(var i = 0; i < temp.length; i++) {
         if(temp[i].match(/(http:|https:)+\S+(jpg|png|gif)/gi)) {
-          vhod +=  "<br><img src='"+temp[i]+"' width='200'>"
+          $('#sporocila').append("<img src='" + temp[i] + "'width=200px style='margin-left:20px'/>");
         }
       }
     }
