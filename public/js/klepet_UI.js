@@ -63,15 +63,23 @@ function filtirirajVulgarneBesede(vhod) {
 }
 
 function dodajanjeHtmlSlik(vhod) {
+    var zasebno = vhod.startsWith("/zasebno");
+    //if (zasebno) {
+      //vhod = vhod.substr( 0, vhod.lastIndexOf( '"' ) );
+    //}
     if(vhod.match(/(http:|https:)+\S+(jpg|png|gif)/gi)) {
       var temp = [];
       temp = vhod.split(' ');
       for(var i = 0; i < temp.length; i++) {
         if(temp[i].match(/(http:|https:)+\S+(jpg|png|gif)/gi)) {
+          $('#sporocila').append('<img width=\'200\' style=\'margin-left:20px; display:block\' src=\'' + temp[i] + '\' />');
           vhod += '<img width=\'200\' style=\'margin-left:20px; display:block\' src=\'' + temp[i] + '\' />';
         }
       }
     }
+    //if (zasebno) {
+      //vhod += '"';
+    //}
     return vhod;
 }
 
