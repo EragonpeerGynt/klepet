@@ -22,16 +22,19 @@ Klepet.prototype.procesirajUkaz = function(ukaz) {
   var sporocilo = false;
 
   switch(ukaz) {
+    
     case 'pridruzitev':
       besede.shift();
       var kanal = besede.join(' ');
       this.spremeniKanal(kanal);
       break;
+      
     case 'vzdevek':
       besede.shift();
       var vzdevek = besede.join(' ');
       this.socket.emit('vzdevekSpremembaZahteva', vzdevek);
       break;
+      
     case 'zasebno':
       besede.shift();
       var besedilo = besede.join(' ');

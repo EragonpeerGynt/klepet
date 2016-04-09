@@ -1,7 +1,15 @@
 function divElementEnostavniTekst(sporocilo) {
-  var jeSmesko = sporocilo.indexOf('http://sandbox.lavbic.net/teaching/OIS/gradivo/') > -1;
-  if (jeSmesko) {
-    sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace('&lt;img', '<img').replace('png\' /&gt;', 'png\' />');
+  //var jeSmesko = sporocilo.indexOf('http://sandbox.lavbic.net/teaching/OIS/gradivo/') > -1;
+  //if (jeSmesko) {
+    //sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace('&lt;img', '<img').replace('png\' /&gt;', 'png\' />');
+  var jeDinamicno = false;
+  jeDinamicno |= sporocilo.indexOf( '<img' ) > -1;
+  if ( jeDinamicno ) {
+    var regex = new RegExp( '(png|jpg|gif)(\'|") /&gt;', 'gi' );
+    sporocilo = sporocilo.replace( /\</g, '&lt;' );
+    sporocilo = sporocilo.replace( /\>/g, '&gt;' );
+    sporocilo = sporocilo.replace( /&lt;img/g, '<img' );
+    sporocilo = sporocilo.replace( regex, function ( ext ) { return ext.substr( 0, 4 ) + ' />'; } );  
     return $('<div style="font-weight: bold"></div>').html(sporocilo);
   } else {
     return $('<div style="font-weight: bold;"></div>').text(sporocilo);
@@ -15,6 +23,7 @@ function divElementHtmlTekst(sporocilo) {
 function procesirajVnosUporabnika(klepetApp, socket) {
   var sporocilo = $('#poslji-sporocilo').val();
   sporocilo = dodajSmeske(sporocilo);
+  sporocilo = dodajanjeHtmlSlik(sporocilo);
   var sistemskoSporocilo;
 
   if (sporocilo.charAt(0) == '/') {
@@ -26,6 +35,7 @@ function procesirajVnosUporabnika(klepetApp, socket) {
     sporocilo = filtirirajVulgarneBesede(sporocilo);
     klepetApp.posljiSporocilo(trenutniKanal, sporocilo);
     $('#sporocila').append(divElementEnostavniTekst(sporocilo));
+    //sporocilo = dodajanjeHtmlSlik(sporocilo);
     $('#sporocila').scrollTop($('#sporocila').prop('scrollHeight'));
   }
 
@@ -52,6 +62,26 @@ function filtirirajVulgarneBesede(vhod) {
   return vhod;
 }
 
+function dodajanjeHtmlSlik(vhod) {
+    var zasebno = vhod.startsWith("/zasebno");
+    if (zasebno) {
+      vhod = vhod.substr( 0, vhod.lastIndexOf( '"' ) );
+    }
+    if(vhod.match(/(http:|https:)+\S+(jpg|png|gif)/gi)) {
+      var temp = [];
+      temp = vhod.split(/ |"/);
+      for(var i = 0; i < temp.length; i++) {
+        if(temp[i].match(/(http:|https:)+\S+(jpg|png|gif)/gi)) {
+          vhod += '<img width=\'200\' style=\'margin-left:20px; display:block\' src=\'' + temp[i] + '\' />';
+        }
+      }
+    }
+    if (zasebno) {
+      vhod += '"';
+    }
+    return vhod;
+}
+
 $(document).ready(function() {
   var klepetApp = new Klepet(socket);
 
@@ -76,6 +106,7 @@ $(document).ready(function() {
   socket.on('sporocilo', function (sporocilo) {
     var novElement = divElementEnostavniTekst(sporocilo.besedilo);
     $('#sporocila').append(novElement);
+    
   });
   
   socket.on('kanali', function(kanali) {
