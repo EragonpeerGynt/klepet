@@ -2,14 +2,18 @@ function divElementEnostavniTekst(sporocilo) {
   //var jeSmesko = sporocilo.indexOf('http://sandbox.lavbic.net/teaching/OIS/gradivo/') > -1;
   //if (jeSmesko) {
     //sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace('&lt;img', '<img').replace('png\' /&gt;', 'png\' />');
-  var jeDinamicno = false;
+var jeDinamicno = false;
   jeDinamicno |= sporocilo.indexOf( '<img' ) > -1;
+  jeDinamicno |= sporocilo.indexOf( '<iframe src=\'https://www.youtube.com/embed/' ) > -1;
   if ( jeDinamicno ) {
-    var regex = new RegExp( '(png|jpg|gif)(\'|") /&gt;', 'gi' );
+    var regex_im = new RegExp( '(png|jpg|gif)(\'|") /&gt;', 'gi' );
+    var regex_yt = new RegExp( '&lt;iframe src=\'https://www.youtube.com/embed/', 'g' );
     sporocilo = sporocilo.replace( /\</g, '&lt;' );
     sporocilo = sporocilo.replace( /\>/g, '&gt;' );
     sporocilo = sporocilo.replace( /&lt;img/g, '<img' );
-    sporocilo = sporocilo.replace( regex, function ( ext ) { return ext.substr( 0, 4 ) + ' />'; } );  
+    sporocilo = sporocilo.replace( regex_im, function ( ext ) { return ext.substr( 0, 4 ) + ' />'; } );
+    sporocilo = sporocilo.replace( regex_yt, '<iframe src=\'https://www.youtube.com/embed/' );
+    sporocilo = sporocilo.replace( /&gt;&lt;\/iframe&gt;/g, '></iframe>' );
     return $('<div style="font-weight: bold"></div>').html(sporocilo);
   } else {
     return $('<div style="font-weight: bold;"></div>').text(sporocilo);
@@ -22,6 +26,7 @@ function divElementHtmlTekst(sporocilo) {
 
 function procesirajVnosUporabnika(klepetApp, socket) {
   var sporocilo = $('#poslji-sporocilo').val();
+  sporocilo = vnosVidea(sporocilo);
   sporocilo = dodajSmeske(sporocilo);
   sporocilo = dodajanjeHtmlSlik(sporocilo);
   var sistemskoSporocilo;
@@ -35,7 +40,6 @@ function procesirajVnosUporabnika(klepetApp, socket) {
     sporocilo = filtirirajVulgarneBesede(sporocilo);
     klepetApp.posljiSporocilo(trenutniKanal, sporocilo);
     $('#sporocila').append(divElementEnostavniTekst(sporocilo));
-    //sporocilo = dodajanjeHtmlSlik(sporocilo);
     $('#sporocila').scrollTop($('#sporocila').prop('scrollHeight'));
   }
 
@@ -77,6 +81,28 @@ function dodajanjeHtmlSlik(vhod) {
       }
     }
     if (zasebno) {
+      vhod += '"';
+  }
+return vhod;
+}
+
+function vnosVidea(vhod) {
+    var zasebno = vhod.startsWith("/zasebno");
+    if ( zasebno ) {
+      vhod = vhod.substr( 0, vhod.lastIndexOf( '"' ) );
+    }
+    if(vhod.match(/(www.youtube.com)/gi)) {
+      var temp = [];
+      temp = vhod.split(/ |"/);
+      for(var i = 0; i < temp.length; i++) {
+        if(temp[i].match(/(www.youtube.com)/gi)) {
+          var temp2 = [];
+          temp2 = temp[i].split('=');
+          vhod += ' <iframe src=\'https://www.youtube.com/embed/' + temp2[1] + '\' width=\'200\' height=\'150\' style=\'margin-left:20px; display:block\' allowfullscreen></iframe> ';
+        }
+      }
+    }
+    if(zasebno) {
       vhod += '"';
     }
     return vhod;
