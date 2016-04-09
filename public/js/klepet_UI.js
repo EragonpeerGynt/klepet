@@ -129,6 +129,15 @@ $(document).ready(function() {
     $('#sporocila').append(divElementHtmlTekst('Sprememba kanala.'));
   });
 
+  socket.on('dregljaj', function(rezultat) {
+    $('#vsebina').jrumble();
+    $('#vsebina').trigger('startRumble');
+    setTimeout(function(){
+       $('#vsebina').trigger('stopRumble')
+    }, 1738);
+        
+  });
+  
   socket.on('sporocilo', function (sporocilo) {
     var novElement = divElementEnostavniTekst(sporocilo.besedilo);
     $('#sporocila').append(novElement);
