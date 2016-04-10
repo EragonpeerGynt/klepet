@@ -134,7 +134,7 @@ $(document).ready(function() {
     $('#vsebina').trigger('startRumble');
     setTimeout(function(){
        $('#vsebina').trigger('stopRumble')
-    }, 1738);
+    }, 1500);
         
   });
   
